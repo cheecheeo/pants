@@ -135,6 +135,9 @@ class MarkdownToHtml(Task):
       _, ext = os.path.splitext(page.source)
       if ext in self.extensions:
         def process_page(key, outdir, url_builder, config, genmap, fragment=False):
+          print()
+          print("YYY", "page.name", page.name)
+          print("YYY", "page.identifier", page.identifier)
           html_path = self.process(
             outdir,
             page.payload.sources_rel_path,
@@ -206,6 +209,8 @@ class MarkdownToHtml(Task):
     wikilinks = WikilinksExtension(build_url)
 
     output_path = os.path.join(outdir, base, targname + '.html')
+    print()
+    print("XXX", "output_path", output_path)
     safe_mkdir(os.path.dirname(output_path))
     with codecs.open(output_path, 'w', 'utf-8') as output:
       with codecs.open(os.path.join(get_buildroot(), base, source), 'r', 'utf-8') as input:
