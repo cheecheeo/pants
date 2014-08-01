@@ -62,9 +62,11 @@ class WikilinksExtension(markdown.Extension):
   def extendMarkdown(self, md, md_globals):
     md.inlinePatterns['wikilinks'] = WikilinksPattern(self.build_url, md)
 
+
 def id_to_html_path(id):
   "Given a target id, give a nice path for an output .html path"
   return "_" + str(id).translate(string.maketrans("./", "/.")) + ".html"
+
 
 class MarkdownToHtml(Task):
   @classmethod
@@ -139,9 +141,6 @@ class MarkdownToHtml(Task):
       _, ext = os.path.splitext(page.source)
       if ext in self.extensions:
         def process_page(key, outdir, url_builder, config, genmap, fragment=False):
-          print()
-          print("YYY", "page.name", page.name)
-          print("YYY", "page.identifier", page.identifier)
           html_path = self.process(
             outdir,
             os.path.join(page.payload.sources_rel_path, page.source),
@@ -157,17 +156,9 @@ class MarkdownToHtml(Task):
           return html_path
 
         def url_builder(linked_page, config=None):
-          print("PAGE.NAME", page.name)
-          print("PAGE.IDENTIFIER", page.identifier)
-          print("L_PAGE.NAME", linked_page.name)
-          print("L_PAGE.IDENTIFIER", linked_page.identifier)
           dest = id_to_html_path(linked_page.identifier)
-          src = id_to_html_path(page.identifier)
-          print("DEST", dest)
-          print("SRC ", src)
-          print("PATH", os.path.relpath(dest,
-                                        os.path.dirname(src)))
-          return linked_page.name, os.path.relpath(dest, os.path.dirname(src))
+          src_dir = os.path.dirname(id_to_html_path(page.identifier))
+          return linked_page.name, os.path.relpath(dest, src_dir)
 
         page_path = os.path.join(self.workdir, 'html')
         html = process_page(page, page_path, url_builder, lambda p: None, plaingenmap)
@@ -219,8 +210,6 @@ class MarkdownToHtml(Task):
     wikilinks = WikilinksExtension(build_url)
 
     output_path = os.path.join(outdir, id_to_html_path(targid))
-    print()
-    print("XXX", "output_path", output_path)
     safe_mkdir(os.path.dirname(output_path))
     with codecs.open(output_path, 'w', 'utf-8') as output:
       with codecs.open(os.path.join(get_buildroot(), source), 'r', 'utf-8') as input:
@@ -230,7 +219,9 @@ class MarkdownToHtml(Task):
         )
         if fragmented:
           style_css = (HtmlFormatter(style=self.code_style)).get_style_defs('.codehilite')
-          template = resource_string(__name__, os.path.join(self._templates_dir, 'fragment.mustache'))
+          template = resource_string(__name__,
+                                     os.path.join(self._templates_dir,
+                                                  'fragment.mustache'))
           generator = Generator(template,
                                 style_css=style_css,
                                 md_html=md_html)
