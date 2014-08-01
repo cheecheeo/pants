@@ -8,7 +8,6 @@ from __future__ import (nested_scopes, generators, division, absolute_import, wi
 import codecs
 import os
 import re
-import string
 import textwrap
 
 import markdown
@@ -65,7 +64,8 @@ class WikilinksExtension(markdown.Extension):
 
 def id_to_html_path(id):
   "Given a target id, give a nice path for an output .html path"
-  return "_" + str(id).translate(string.maketrans("./", "/.")) + ".html"
+  # _ prefix is because //readme gets an id .readme: whoops, hidden file
+  return "_" + str(id) + ".html"
 
 
 class MarkdownToHtml(Task):
