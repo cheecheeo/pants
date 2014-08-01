@@ -95,7 +95,10 @@ python_tests(
   sources = ['test_builddict.py'],
   dependencies = [
     pants(':base'),
+    pants('src/python/pants/backend/core:plugin'),
     pants('src/python/pants/backend/core/tasks:builddictionary'),
+    pants('src/python/pants/backend/jvm:plugin'),
+    pants('src/python/pants/backend/python:plugin'),
   ]
 )
 
@@ -496,10 +499,11 @@ python_tests(
   dependencies = [
     pants('src/python/pants/backend/core/tasks:check_exclusives'),
     pants('src/python/pants/backend/core/tasks:group_task'),
-    pants('src/python/pants/engine:engine'),
     pants('src/python/pants/backend/jvm/targets:java'),
     pants('src/python/pants/backend/jvm/targets:scala'),
     pants('src/python/pants/backend/python/targets:python'),
+    pants('src/python/pants/base:target'),
+    pants('src/python/pants/engine:engine'),
     pants('tests/python/pants_test:base_test'),
   ]
 )
