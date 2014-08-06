@@ -49,7 +49,7 @@ class Git(Scm):
   @property
   def origin_push_url(self):
     git_output = self._check_output(['remote', '--verbose'], raise_type=Scm.LocalException)
-    origin_push_line = [line.split()[1] for line in git_output.split('\n')
+    origin_push_line = [line.split()[1] for line in git_output.splitlines()
                                         if 'origin' in line and '(push)' in line]
     if len(origin_push_line) != 1:
       raise Scm.LocalException('Unable to find origin remote amongst: ' + git_output)

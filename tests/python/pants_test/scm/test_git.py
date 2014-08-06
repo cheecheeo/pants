@@ -10,6 +10,7 @@ import os
 import re
 import subprocess
 import unittest
+from contextlib import contextmanager
 
 import pytest
 
@@ -107,6 +108,14 @@ class GitTest(unittest.TestCase):
 
     cls.git = Git(gitdir=cls.gitdir, worktree=cls.worktree)
 
+  @staticmethod
+  @contextmanager
+  def mkremote(remote_name):
+    with temporary_dir() as remote_uri:
+      subprocess.check_call(['git', 'remote', 'add', remote_name, remote_uri])
+      yield remote_uri
+      subprocess.check_call(['git', 'remote', 'remove', remote_name])
+
   @classmethod
   def tearDownClass(cls):
     safe_rmtree(cls.origin)
@@ -128,11 +137,13 @@ class GitTest(unittest.TestCase):
 
     self.assertTrue(merge_base in self.git.changelog())
 
-    try:
+    with pytest.raises(Scm.LocalException):
       self.git.origin_push_url
-      self.assertTrue(False)
-    except Scm.LocalException:
-      self.assertTrue(True)
+
+    with environment_as(GIT_DIR=self.gitdir, GIT_WORK_TREE=self.worktree):
+      with self.mkremote('origin') as origin_uri:
+        origin_url = self.git.origin_push_url
+        self.assertEqual(origin_url, origin_uri)
 
     self.assertTrue(self.git.tag_name.startswith('first-'), msg='un-annotated tags should be found')
     self.assertEqual('master', self.git.branch_name)
