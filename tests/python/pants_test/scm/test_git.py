@@ -113,8 +113,10 @@ class GitTest(unittest.TestCase):
   def mkremote(remote_name):
     with temporary_dir() as remote_uri:
       subprocess.check_call(['git', 'remote', 'add', remote_name, remote_uri])
-      yield remote_uri
-      subprocess.check_call(['git', 'remote', 'remove', remote_name])
+      try:
+        yield remote_uri
+      finally:
+        subprocess.check_call(['git', 'remote', 'remove', remote_name])
 
   @classmethod
   def tearDownClass(cls):
