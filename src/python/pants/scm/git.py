@@ -44,10 +44,11 @@ class Git(Scm):
 
   @property
   def merge_base(self):
+    """Returns the merge-base of master and HEAD in bash: `git merge-base master HEAD`"""
     return self._check_output(['merge-base', 'master', 'HEAD'], raise_type=Scm.LocalException)
 
   @property
-  def origin_push_url(self):
+  def server_url(self):
     git_output = self._check_output(['remote', '--verbose'], raise_type=Scm.LocalException)
     origin_push_line = [line.split()[1] for line in git_output.splitlines()
                                         if 'origin' in line and '(push)' in line]

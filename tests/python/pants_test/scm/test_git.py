@@ -5,12 +5,12 @@
 from __future__ import (nested_scopes, generators, division, absolute_import, with_statement,
                         print_function, unicode_literals)
 
+from contextlib import contextmanager
 from itertools import izip_longest
 import os
 import re
 import subprocess
 import unittest
-from contextlib import contextmanager
 
 import pytest
 
@@ -144,7 +144,7 @@ class GitTest(unittest.TestCase):
 
     with environment_as(GIT_DIR=self.gitdir, GIT_WORK_TREE=self.worktree):
       with self.mkremote('origin') as origin_uri:
-        origin_url = self.git.origin_push_url
+        origin_url = self.git.server_url
         self.assertEqual(origin_url, origin_uri)
 
     self.assertTrue(self.git.tag_name.startswith('first-'), msg='un-annotated tags should be found')
