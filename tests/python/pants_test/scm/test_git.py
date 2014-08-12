@@ -140,7 +140,7 @@ class GitTest(unittest.TestCase):
     self.assertTrue(merge_base in self.git.changelog())
 
     with pytest.raises(Scm.LocalException):
-      self.git.origin_push_url
+      self.git.server_url
 
     with environment_as(GIT_DIR=self.gitdir, GIT_WORK_TREE=self.worktree):
       with self.mkremote('origin') as origin_uri:
