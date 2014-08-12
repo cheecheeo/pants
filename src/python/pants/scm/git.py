@@ -109,7 +109,7 @@ class Git(Scm):
     self._check_call(['commit', '--all', '--message=%s' % message], raise_type=Scm.LocalException)
     self._push()
 
-  def commit_date(self, ref):
+  def commit_date(self, commit_reference):
     return self._check_output(['log', '-1', '--pretty=tformat:%ci', ref], raise_type=Scm.LocalException)
 
   def _push(self, *refs):
